@@ -1,0 +1,18 @@
+$footer-bg: #f8f9fa;
+$footer-text: #6c757d;
+
+.app-footer {
+  background-color: $footer-bg;
+  color: $footer-text;
+  text-align: center;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+
+  p {
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+  }
+}

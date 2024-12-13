@@ -1,0 +1,34 @@
+$spinner-border: #ccc;
+$spinner-active: #007bff;
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid $spinner-border;
+    border-top: 5px solid $spinner-active;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  p {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+  }
+}

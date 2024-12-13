@@ -1,0 +1,60 @@
+$table-border: #ddd;
+$odd-row-bg: #f9f9f9;
+$header-bg: #007bff;
+$header-text: white;
+$btn-primary: #007bff;
+$btn-disabled: #ccc;
+
+.table-container {
+  margin: 1rem 0;
+  max-height: 60vh;
+  overflow-y: auto;
+
+  .table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+
+    thead {
+      background-color: $header-bg;
+      color: $header-text;
+    }
+
+    th,
+    td {
+      padding: 0.5rem;
+      text-align: left;
+      border: 1px solid $table-border;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: $odd-row-bg;
+    }
+  }
+
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+
+    button {
+      background-color: $btn-primary;
+      color: $header-text;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin: 0 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:disabled {
+        background-color: $btn-disabled;
+        cursor: not-allowed;
+      }
+    }
+
+    span {
+      margin: 0 1rem;
+    }
+  }
+}

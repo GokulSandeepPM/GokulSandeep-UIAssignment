@@ -1,0 +1,12 @@
+$error-color: #d9534f;
+
+.error-message {
+  text-align: center;
+  color: $error-color;
+  font-size: 1.2rem;
+  padding: 1rem;
+
+  p {
+    margin: 0;
+  }
+}
