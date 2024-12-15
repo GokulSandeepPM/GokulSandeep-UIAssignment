@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import '../styles/RewardsTable.scss'
+import '../styles/RewardsTable.scss';
 
 /**
  * Component to display rewards data in a paginated and responsive table.
@@ -22,6 +22,7 @@ const RewardsTable = ({ data }) => {
 
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
+  // Memoize paginated data to avoid recalculating on every render
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * rowsPerPage;
     return data.slice(start, start + rowsPerPage);
@@ -35,12 +36,21 @@ const RewardsTable = ({ data }) => {
     });
   };
 
+  const handleFirstPage = () => {
+    setCurrentPage(1);
+  };
+
+  const handleLastPage = () => {
+    setCurrentPage(totalPages);
+  };
+
   return (
     <div className="table-container">
       <table className="table table-striped">
         <thead>
           <tr>
             <th>Customer ID</th>
+            <th>Year</th>
             <th>Month</th>
             <th>Total Points</th>
           </tr>
@@ -49,6 +59,7 @@ const RewardsTable = ({ data }) => {
           {paginatedData.map((row, index) => (
             <tr key={index}>
               <td>{row.customerId}</td>
+              <td>{row.year}</td>
               <td>{row.month}</td>
               <td>{row.points}</td>
             </tr>
@@ -57,21 +68,39 @@ const RewardsTable = ({ data }) => {
       </table>
       <div className="pagination-controls">
         <button
+         aria-label="First"
+          className="btn btn-primary"
+          disabled={currentPage === 1}
+          onClick={handleFirstPage}
+        >
+          <i className="fas fa-angle-double-left"></i> 
+        </button>
+        <button
+          aria-label="Previous"
           className="btn btn-primary"
           disabled={currentPage === 1}
           onClick={() => handlePageChange('prev')}
         >
-          Previous
+          <i className="fas fa-angle-left"></i> 
         </button>
         <span className="page-info">
           Page {currentPage} of {totalPages}
         </span>
         <button
+          aria-label="Next"
           className="btn btn-primary"
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange('next')}
         >
-          Next
+          <i className="fas fa-angle-right"></i> 
+        </button>
+        <button
+          aria-label="Last"
+          className="btn btn-primary"
+          disabled={currentPage === totalPages}
+          onClick={handleLastPage}
+        >
+          <i className="fas fa-angle-double-right"></i>
         </button>
       </div>
     </div>

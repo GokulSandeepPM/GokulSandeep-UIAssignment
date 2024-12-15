@@ -24,64 +24,64 @@ export const calculateRewardPoints = (amount) => {
 };
 
 /**
- * Process transaction data to calculate rewards for each customer.
- * @param {Array} transactions - Array of transaction objects with `customerId`, `amount`, and `date`.
- * @returns {Array} Array of processed reward data, each containing `customerId`, `month`, and `points`.
+ * Processes a list of transactions and calculates reward points for each customer, 
+ * grouped by year and month.
+ * 
+ * @param {Array} transactions - The list of transactions with customerId, amount, and date.
+ * @returns {Array} - An array of processed reward data with customerId, year, month, and points.
  */
 export const processRewardData = (transactions) => {
-  // An object to store rewards data grouped by customer and month.
   const rewardsByCustomer = {};
 
-  // Loop through all transactions to process the data.
   transactions.forEach(({ customerId, amount, date }) => {
-    // Extract the month from the transaction date.
-    const month = new Date(date).toLocaleString('default', { month: 'long' });
-    
-    // Calculate reward points based on the transaction amount.
-    const points = calculateRewardPoints(amount);
+    const dateObj = new Date(date);
+    const month = dateObj.toLocaleString('default', { month: 'long' });
+    const year = dateObj.getFullYear();
+    const points = calculateRewardPoints(Math.round(amount));
 
-    // If this customer doesn't exist in the rewards object, initialize their entry.
+    // Initialize customer and year if they don't exist
     if (!rewardsByCustomer[customerId]) {
       rewardsByCustomer[customerId] = {};
     }
-
-    // If the month does not exist for this customer, initialize it with 0 points.
-    if (!rewardsByCustomer[customerId][month]) {
-      rewardsByCustomer[customerId][month] = 0;
+    if (!rewardsByCustomer[customerId][year]) {
+      rewardsByCustomer[customerId][year] = {};
     }
 
-    // Add the calculated points to the existing points for that month and customer.
-    rewardsByCustomer[customerId][month] = parseFloat(
-      (rewardsByCustomer[customerId][month] + points).toFixed(2)
-    );
+    // Initialize the month if it doesn't exist for the current year
+    if (!rewardsByCustomer[customerId][year][month]) {
+      rewardsByCustomer[customerId][year][month] = 0;
+    }
+
+    // Accumulate points
+    rewardsByCustomer[customerId][year][month] = rewardsByCustomer[customerId][year][month] + points;
   });
 
-  // Convert the rewardsByCustomer object into an array of reward entries.
-  return Object.entries(rewardsByCustomer).flatMap(([customerId, months]) =>
-    Object.entries(months).map(([month, points]) => ({
-      customerId,
-      month,
-      points,
-    }))
-  );
+  // Flatten the object to an array
+  return Object.entries(rewardsByCustomer).flatMap(([customerId, years]) =>
+    Object.entries(years).flatMap(([year, months]) =>
+      Object.entries(months).map(([month, points]) => ({
+        customerId,
+        year,
+        month,
+        points,
+      }))
+    )
+  ).sort();
 };
 
 
 /**
- * Filter reward data based on a search query (customerId or month).
- * @param {Array} data - The reward data.
- * @param {string} query - The search query.
- * @returns {Array} Filtered reward data.
+ * A helper function to filter reward data based on a search query.
+ * 
+ * @param {Array} data - The reward data to filter.
+ * @param {string} query - The search query to match.
+ * @returns {Array} - The filtered data.
  */
 export const filterRewardData = (data, query) => {
-  if (!query) return data;
-  
-  //convert the query string to lower case
-  const lowerCaseQuery = query.toLowerCase();
-  //return the items that matches the query string
   return data.filter(
-    ({ customerId, month }) =>
-      customerId.toLowerCase().includes(lowerCaseQuery) ||
-      month.toLowerCase().includes(lowerCaseQuery)
+    ({ customerId, month, year }) =>
+      customerId.toLowerCase().includes(query.toLowerCase()) ||
+      month.toLowerCase().includes(query.toLowerCase()) ||
+      year.toString().includes(query)
   );
 };
